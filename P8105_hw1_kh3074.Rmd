@@ -38,8 +38,6 @@ for (i in 1:length(p1_df)){
            }
   )
 }
-#for each variable in p1_df, calculate their mean, and shows which doesn't work
-
 ```
 ```{r, results='hide'}
 as.numeric(0.3)
