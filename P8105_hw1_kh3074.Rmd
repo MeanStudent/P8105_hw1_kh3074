@@ -5,11 +5,14 @@ output: github_document
 ```{r}
 #import all the packages needed
 library(tidyverse)
+library(palmerpenguins)
 ```
 
 ---
 
 # Problem 1 
+
+## Create dataframe
 ```{r}
 p1_var1 = rnorm(10,mean = 0,sd = 1)
 #create a random sample of size 10 from a standard Normal distribution
@@ -28,22 +31,98 @@ p1_df = tibble(
 #put all the four variables in to a dataframe
 p1_df
 ```
+## caculate mean
 ```{r}
 for (i in 1:length(p1_df)){
   tryCatch({cat('mean of',colnames(p1_df)[i],'is',mean(pull(p1_df,i)),'\n')}, 
            #try calculate mean for ith variable in p1_df
            warning = function(w){
-             cat(colnames(p1_df)[i],'variable in the dataframe doesn\'t work for mean','\n')
+           cat(colnames(p1_df)[i],'variable in the dataframe doesn\'t work for mean','\n')
            #show the variable name if it doesn't work for mean
            }
   )
 }
 ```
+
+## try convert variables to numeric
 ```{r, results='hide'}
 as.numeric(0.3)
 as.numeric(TRUE)
 as.numeric('pancake')
 as.numeric(factor('old','young'))
-#character and factor can't convert to numeric variables so they don't work for mean
 ```
+
+
+Float variable and logistic variable can successfully convert to numeric variables  
+Factor variable and character variable get NA  
+Conclusion: character and factor can't convert to numeric variables so they don't work for mean  
+
+
+---
+# Problem 2
+
+## load penguins dataset
+```{r}
+df = data(penguins,package = 'palmerpenguins')
+penguins
+summary(penguins)
+```
+## describe the dataset
+```{r}
+colnames(penguins)
+```
+here are total 344 penguins in the data set and each of them have 8 features
+```{r}
+table(penguins[1])
+```
+species is a **factor** variables which contain 3 "levels",there are 152 Adelies,68 Chinstraps and 124 Gentoos 
+```{r}
+table(penguins[2])
+```
+island  is a **factor** variables which contain 3 "levels",there are 168 Biscoe,124 Dream and 52 Torgersen 
+
+```{r}
+sum(is.na(pull(penguins,3)))
+#find the missing value
+```
+
+"bill_length_mm"and "bill_depth_mm"are **float** variables  
+"flipper_length_mm"and "body_mass_g" are **int** variables  
+**There are two penguins lost these four values**
+```{r}
+sum(is.na(pull(penguins,7)))
+```
+
+sex is a **factor** variable which contain 2 "levels",there are 165 femals,and 168 males **(11 NAs)**
+```{r}
+table(penguins[8])
+```
+All the penguins are observed during 2007,2008,2009
+
+## The size of the dataset
+```{r}
+ncol(penguins)
+nrow(penguins)
+```
+There are **344** penguins recorded and each of them have **8** features 
+
+## The mean of flipper length
+
+**there are 2 missing values in the vector "flipper_length_mm"**
+We should ignore the two missing values when we calculate the mean.
+```{r}
+mean(pull(penguins,5),na.rm = TRUE)
+```
+The mean flipper length is 200.9152
+
+## Draw the scatterplot
+```{r}
+ggplot(penguins,aes(x = bill_length_mm,y = flipper_length_mm, colour = species)) + geom_point()
+ggsave('penguin plot.png')
+```
+
+
+
+
+
 
